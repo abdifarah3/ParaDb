@@ -1,144 +1,145 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjetsFederes.Models;
-using System.Linq;
+using ProjetsFederes.Persistence;
 
-namespace ProjetsFederes.Controllers
+namespace ProjetsFederes.Controllers;
+
+public class FournisseurController : Controller
 {
-    public class FournisseurController : Controller
+    private readonly ApplicationContext _context;
+
+    public FournisseurController(ApplicationContext context)
     {
-        private readonly ApplicationContext context;
+        this._context = context;
+    }
 
-        public FournisseurController(ApplicationContext context)
+    // GET: Fournisseur
+    public IActionResult Index()
+    {
+        return View(this._context.Suppliers.ToList());
+    }
+
+    // GET: Fournisseur/Details/5
+    public IActionResult Details(int? id)
+    {
+        if (id == null)
         {
-            this.context = context;
+            return NotFound();
         }
 
-        // GET: Fournisseur
-        public IActionResult Index()
+        var supplier = this._context.Suppliers.FirstOrDefault(m => m.Id == id);
+            
+        if (supplier == null)
         {
-            return View(this.context.Fournisseurs.ToList());
+            return NotFound();
         }
 
-        // GET: Fournisseur/Details/5
-        public IActionResult Details(int? id)
+        return View(supplier);
+    }
+
+    // GET: Fournisseur/Create
+    public IActionResult Create()
+    {
+        return View();
+    }
+
+    // POST: Fournisseur/Create
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Create([Bind("FournisseurId,Nom,Contact")] Supplier supplier)
+    {
+        if (ModelState.IsValid)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var fournisseur = this.context.Fournisseurs
-                .FirstOrDefault(m => m.FournisseurId == id);
-            if (fournisseur == null)
-            {
-                return NotFound();
-            }
-
-            return View(fournisseur);
-        }
-
-        // GET: Fournisseur/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Fournisseur/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("FournisseurId,Nom,Contact")] Fournisseur fournisseur)
-        {
-            if (ModelState.IsValid)
-            {
-                this.context.Add(fournisseur);
-                this.context.SaveChanges();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(fournisseur);
-        }
-
-        // GET: Fournisseur/Edit/5
-        public IActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var fournisseur = this.context.Fournisseurs.Find(id);
-            if (fournisseur == null)
-            {
-                return NotFound();
-            }
-            return View(fournisseur);
-        }
-
-        // POST: Fournisseur/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("FournisseurId,Nom,Contact")] Fournisseur fournisseur)
-        {
-            if (id != fournisseur.FournisseurId)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    this.context.Update(fournisseur);
-                    this.context.SaveChanges();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!FournisseurExists(fournisseur.FournisseurId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(fournisseur);
-        }
-
-        // GET: Fournisseur/Delete/5
-        public IActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var fournisseur = this.context.Fournisseurs
-                .FirstOrDefault(m => m.FournisseurId == id);
-            if (fournisseur == null)
-            {
-                return NotFound();
-            }
-
-            return View(fournisseur);
-        }
-
-        // POST: Fournisseur/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
-        {
-            var fournisseur = this.context.Fournisseurs.Find(id);
-            this.context.Fournisseurs.Remove(fournisseur);
-            this.context.SaveChanges();
+            this._context.Add(supplier);
+            this._context.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
+        return View(supplier);
+    }
 
-        private bool FournisseurExists(int id)
+    // GET: Fournisseur/Edit/5
+    public IActionResult Edit(int? id)
+    {
+        if (id == null)
         {
-            return this.context.Fournisseurs.Any(e => e.FournisseurId == id);
+            return NotFound();
         }
+
+        var supplier = this._context.Suppliers.Find(id);
+        
+        if (supplier == null)
+        {
+            return NotFound();
+        }
+        return View(supplier);
+    }
+
+    // POST: Fournisseur/Edit/5
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Edit(int id, [Bind("FournisseurId,Nom,Contact")] Supplier supplier)
+    {
+        if (id != supplier.Id)
+        {
+            return NotFound();
+        }
+
+        if (ModelState.IsValid)
+        {
+            try
+            {
+                this._context.Update(supplier);
+                this._context.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!SupplierExists(supplier.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Index));
+        }
+        return View(supplier);
+    }
+
+    // GET: Fournisseur/Delete/5
+    public IActionResult Delete(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var supplier = this._context.Suppliers.FirstOrDefault(m => m.Id == id);
+        if (supplier == null)
+        {
+            return NotFound();
+        }
+
+        return View(supplier);
+    }
+
+    // POST: Fournisseur/Delete/5
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public IActionResult DeleteConfirmed(int id)
+    {
+        var supplier = _context.Suppliers.Find(id);
+        
+        _context.Suppliers.Remove(supplier);
+        _context.SaveChanges();
+        
+        return RedirectToAction(nameof(Index));
+    }
+
+    private bool SupplierExists(int id)
+    {
+        return _context.Suppliers.Any(e => e.Id == id);
     }
 }

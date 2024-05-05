@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ProjetsFederes.Models;
 using System.Linq;
+using ProjetsFederes.Persistence;
 
 namespace ProjetsFederes.Controllers
 {
@@ -17,7 +18,7 @@ namespace ProjetsFederes.Controllers
         // GET: Commande
         public IActionResult Index()
         {
-            return View(context.Commandes.Include(c => c.Client).ToList());
+            return View(context.Orders.Include(c => c.Client).ToList());
         }
 
         // GET: Commande/Details/5
@@ -28,9 +29,9 @@ namespace ProjetsFederes.Controllers
                 return NotFound();
             }
 
-            var commande = context.Commandes
+            var commande = context.Orders
                 .Include(c => c.Client)
-                .FirstOrDefault(m => m.CommandeId == id);
+                .FirstOrDefault(m => m.Id == id);
 
             if (commande == null)
             {
@@ -49,15 +50,15 @@ namespace ProjetsFederes.Controllers
         // POST: Commande/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("CommandeId,DateCommande,Statut,ClientId")] Commande commande)
+        public IActionResult Create([Bind("CommandeId,DateCommande,Statut,ClientId")] Order order)
         {
             if (ModelState.IsValid)
             {
-                context.Add(commande);
+                context.Add(order);
                 context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
-            return View(commande);
+            return View(order);
         }
 
         // GET: Commande/Edit/5
@@ -68,7 +69,7 @@ namespace ProjetsFederes.Controllers
                 return NotFound();
             }
 
-            var commande = context.Commandes.Find(id);
+            var commande = context.Orders.Find(id);
 
             if (commande == null)
             {
@@ -80,9 +81,9 @@ namespace ProjetsFederes.Controllers
         // POST: Commande/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("CommandeId,DateCommande,Statut,ClientId")] Commande commande)
+        public IActionResult Edit(int id, [Bind("CommandeId,DateCommande,Statut,ClientId")] Order order)
         {
-            if (id != commande.CommandeId)
+            if (id != order.Id)
             {
                 return NotFound();
             }
@@ -91,12 +92,12 @@ namespace ProjetsFederes.Controllers
             {
                 try
                 {
-                    context.Update(commande);
+                    context.Update(order);
                     context.SaveChanges();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CommandeExists(commande.CommandeId))
+                    if (!CommandeExists(order.Id))
                     {
                         return NotFound();
                     }
@@ -107,7 +108,7 @@ namespace ProjetsFederes.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(commande);
+            return View(order);
         }
 
         // GET: Commande/Delete/5
@@ -118,9 +119,9 @@ namespace ProjetsFederes.Controllers
                 return NotFound();
             }
 
-            var commande = context.Commandes
+            var commande = context.Orders
                 .Include(c => c.Client)
-                .FirstOrDefault(m => m.CommandeId == id);
+                .FirstOrDefault(m => m.Id == id);
 
             if (commande == null)
             {
@@ -135,15 +136,15 @@ namespace ProjetsFederes.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            var commande = context.Commandes.Find(id);
-            context.Commandes.Remove(commande);
+            var commande = context.Orders.Find(id);
+            context.Orders.Remove(commande);
             context.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
 
         private bool CommandeExists(int id)
         {
-            return context.Commandes.Any(e => e.CommandeId == id);
+            return context.Orders.Any(e => e.Id == id);
         }
     }
 }

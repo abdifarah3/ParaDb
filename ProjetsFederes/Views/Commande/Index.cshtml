@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ProjetsFederes.Models.Commande>
+﻿@model IEnumerable<ProjetsFederes.Persistence.Order>
 
 @{
     ViewData["Title"] = "Commande";
@@ -13,7 +13,7 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.DateCommande)
+                @Html.DisplayNameFor(model => model.Date)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Total)
@@ -31,7 +31,7 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.DateCommande)
+                @Html.DisplayFor(modelItem => item.Date)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Total)
@@ -40,12 +40,12 @@
                 @Html.DisplayFor(modelItem => item.Status)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Client.Adresse)
+                @Html.DisplayFor(modelItem => item.Client.Address)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.CommandeId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.CommandeId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.CommandeId">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
 }
