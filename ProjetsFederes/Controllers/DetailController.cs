@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ProjetsFederes.Models;
 using System.Linq;
+using ProjetsFederes.Persistence;
 
 namespace ProjetsFederes.Controllers
 {
@@ -17,7 +18,7 @@ namespace ProjetsFederes.Controllers
         // GET: DetailCommande
         public IActionResult Index()
         {
-            return View(context.DetailCommandes.Include(dc => dc.Produit).Include(dc => dc.Commande).ToList());
+            return View(context.OrderLines.Include(dc => dc.Product).Include(dc => dc.Order).ToList());
         }
 
         // GET: DetailCommande/Details/5
@@ -28,10 +29,10 @@ namespace ProjetsFederes.Controllers
                 return NotFound();
             }
 
-            var detailCommande = context.DetailCommandes
-                .Include(dc => dc.Produit)
-                .Include(dc => dc.Commande)
-                .FirstOrDefault(m => m.DetailCommandeId == id);
+            var detailCommande = context.OrderLines
+                .Include(dc => dc.Product)
+                .Include(dc => dc.Order)
+                .FirstOrDefault(m => m.Id == id);
             if (detailCommande == null)
             {
                 return NotFound();
@@ -49,15 +50,15 @@ namespace ProjetsFederes.Controllers
         // POST: DetailCommande/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("DetailCommandeId,Quantite,PrixUnitaire,ProduitId,CommandeId")] DetailCommande detailCommande)
+        public IActionResult Create([Bind("DetailCommandeId,Quantite,PrixUnitaire,ProduitId,CommandeId")] OrderLine orderLine)
         {
             if (ModelState.IsValid)
             {
-                context.Add(detailCommande);
+                context.Add(orderLine);
                 context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
-            return View(detailCommande);
+            return View(orderLine);
         }
 
         // GET: DetailCommande/Delete/5
@@ -68,10 +69,10 @@ namespace ProjetsFederes.Controllers
                 return NotFound();
             }
 
-            var detailCommande = context.DetailCommandes
-                .Include(dc => dc.Produit)
-                .Include(dc => dc.Commande)
-                .FirstOrDefault(m => m.DetailCommandeId == id);
+            var detailCommande = context.OrderLines
+                .Include(dc => dc.Product)
+                .Include(dc => dc.Order)
+                .FirstOrDefault(m => m.Id == id);
             if (detailCommande == null)
             {
                 return NotFound();
@@ -85,15 +86,15 @@ namespace ProjetsFederes.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            var detailCommande = context.DetailCommandes.Find(id);
-            context.DetailCommandes.Remove(detailCommande);
+            var detailCommande = context.OrderLines.Find(id);
+            context.OrderLines.Remove(detailCommande);
             context.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
 
         private bool DetailCommandeExists(int id)
         {
-            return context.DetailCommandes.Any(e => e.DetailCommandeId == id);
+            return context.OrderLines.Any(e => e.Id == id);
         }
     }
 }

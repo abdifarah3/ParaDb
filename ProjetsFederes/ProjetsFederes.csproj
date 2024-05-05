@@ -17,9 +17,4 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="wwwroot\template\vintagefur-1.0.0\css\.DS_Store" />
-    <None Include="wwwroot\template\vintagefur-1.0.0\js\.DS_Store" />
-  </ItemGroup>
-
 </Project>
